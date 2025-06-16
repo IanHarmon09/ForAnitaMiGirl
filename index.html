@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Me Quieres?</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            /* Fondo Azul Cielo */
+            background: linear-gradient(135deg, #87CEEB 0%, #ADD8E6 50%, #EE82EE 100%); /* Tonos de azul cielo y púrpura/rosa */
+            overflow: hidden; /* Para evitar barras de desplazamiento */
+            position: relative; /* Necesario para posicionar elementos decorativos */
+        }
+
+        /* --- Mucha Más Decoración --- */
+
+        /* Estrellas flotantes (manteniendo las existentes) */
+        .star {
+            position: absolute;
+            background-color: #ffd700; /* Color dorado */
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatStar var(--duration) infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.7);
+        }
+
+        /* Burbujas flotantes (manteniendo las existentes) */
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.4); /* Blanca translúcida */
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatBubble var(--duration) infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Pequeñas partículas (manteniendo las existentes) */
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle var(--duration) infinite ease-in-out;
+        }
+
+        /* Corazones pequeños (¡MÁS DE ESTOS!) */
+        .deco-heart {
+            position: absolute;
+            background-color: #ff69b4; /* Rosa corazón */
+            transform: rotate(-45deg);
+            width: 25px;
+            height: 25px;
+            opacity: 0;
+            animation: floatDecoHeart var(--duration) infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+            z-index: 2; /* Asegura que estén por encima del dinosaurio pero debajo del container */
+        }
+        .deco-heart::before,
+        .deco-heart::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ff69b4;
+            border-radius: 50%;
+        }
+        .deco-heart::before { top: -12.5px; left: 0; }
+        .deco-heart::after { top: 0; left: 12.5px; }
+
+        /* Rayos de luz (manteniendo los existentes) */
+        .light-ray {
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(255, 255, 0, 0.5), transparent);
+            width: 5px;
+            height: 200px;
+            transform-origin: top center;
+            opacity: 0;
+            animation: pulseLightRay var(--duration) infinite ease-in-out;
+            z-index: 2;
+        }
+
+        /* Animaciones para los elementos decorativos */
+        @keyframes floatStar {
+            0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(var(--s, 0.8)); }
+            20% { opacity: 0.9; }
+            50% { transform: translateY(-70vh) rotate(180deg) scale(var(--s, 1.1)); }
+            80% { opacity: 0.9; }
+            100% { opacity: 0; transform: translateY(-100vh) rotate(360deg) scale(var(--s, 0.9)); }
+        }
+
+        @keyframes floatBubble {
+            0% { opacity: 0; transform: translateY(0) scale(0.6); }
+            20% { opacity: 0.7; }
+            50% { transform: translateY(-80vh) scale(1.2); }
+            80% { opacity: 0.7; }
+            100% { opacity: 0; transform: translateY(-120vh) scale(0.8); }
+        }
+
+        @keyframes floatParticle {
+            0% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+            25% { opacity: 0.6; }
+            50% { transform: translate(var(--x), var(--y)) scale(1); }
+            75% { opacity: 0.6; }
+            100% { opacity: 0; transform: translate(var(--x2), var(--y2)) scale(0.5); }
+        }
+
+        @keyframes floatDecoHeart {
+            0% { opacity: 0; transform: translateY(0) rotate(-45deg) scale(0.7); }
+            20% { opacity: 0.8; }
+            50% { transform: translateY(-60vh) rotate(135deg) scale(1.1); }
+            80% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateY(-90vh) rotate(315deg) scale(0.9); }
+        }
+
+        @keyframes pulseLightRay {
+            0%, 100% { opacity: 0; transform: scaleY(0); }
+            50% { opacity: 0.4; transform: scaleY(1); }
+        }
+
+        /* Nubes (manteniendo las existentes) */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: moveCloud var(--duration) linear infinite;
+            z-index: 2;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+        .cloud-small { width: 60px; height: 30px; }
+        .cloud-small::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+        .cloud-small::after { width: 50px; height: 50px; top: -25px; right: 10px; }
+
+        .cloud-medium { width: 90px; height: 45px; }
+        .cloud-medium::before { width: 60px; height: 60px; top: -30px; left: 15px; }
+        .cloud-medium::after { width: 75px; height: 75px; top: -35px; right: 15px; }
+
+        @keyframes moveCloud {
+            0% { transform: translateX(-150%); }
+            100% { transform: translateX(calc(100vw + 150%)); }
+        }
+
+
+        /* --- Fin Decoración Extra --- */
+
+
+        /* Estilos para el dinosaurio animado */
+        .dinosaur-background {
+            position: absolute;
+            bottom: 0; /* Lo posiciona en la parte inferior */
+            left: -280px; /* Inicia más a la izquierda para una mejor entrada */
+            width: 280px; /* Ancho del dinosaurio (ajusta si tu GIF es diferente) */
+            height: 280px; /* Altura del dinosaurio */
+            background-image: url('dinodino.gif'); /* Asegúrate que 'dinodino.gif' esté en la misma carpeta que este HTML */
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 1; /* Detrás del contenido principal, burbujas, estrellas, etc. */
+            animation: walkDino 18s linear infinite; /* Animación de caminar (más lenta) */
+            transform-origin: bottom center; /* Para que gire sobre su base */
+        }
+
+        @keyframes walkDino {
+            0% {
+                transform: translateX(-100%); /* Empieza completamente a la izquierda */
+            }
+            49% {
+                transform: translateX(calc(100vw + 100%)); /* Atraviesa la pantalla */
+            }
+            50% {
+                transform: translateX(calc(100vw + 100%)) scaleX(-1); /* Gira y mira hacia la izquierda */
+            }
+            99% {
+                transform: translateX(-100%) scaleX(-1); /* Camina hacia la izquierda */
+            }
+            100% {
+                transform: translateX(-100%) scaleX(1); /* Vuelve a girar para la próxima iteración */
+            }
+        }
+
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative; /* Se mantiene relativo para el texto y los botones internos */
+            overflow: hidden; /* Para contener la animación de corazones */
+            width: 450px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10; /* Asegura que esté por encima de toda la decoración */
+        }
+
+        .question-text {
+            font-size: 3em;
+            color: #4a4a4a;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Necesario para centrar el botón "Sí" */
+            width: 100%;
+            height: 100px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+
+        .yes-btn {
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            z-index: 10;
+            position: absolute; /* Para centrarlo dentro del buttons-container */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .yes-btn:hover {
+            background-color: #45a049;
+            transform: translateX(-50%) translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-btn {
+            background-color: #f44336; /* Rojo */
+            color: white;
+            position: absolute; /* Ahora es relativo al body para moverse por toda la pantalla */
+            left: calc(50% + 150px); /* Ajusta esta posición inicial si el botón se solapa con "Sí" */
+            top: 50%;
+            transform: translate(-50%, -50%); /* Centrado inicial relativo a su propio punto */
+            transition: all 0.3s ease-out; /* Transición para el movimiento */
+            z-index: 15; /* Asegura que esté por encima del contenedor principal y la decoración */
+        }
+
+        .no-btn:hover {
+            background-color: #da190b;
+            transform: translate(-50%, -50%) translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animación de corazones (para cuando se presiona "Sí") */
+        .heart-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 5; /* Detrás de los botones, pero encima del dinosaurio y la decoración */
+        }
+
+        .heart {
+            position: absolute;
+            background-color: #ff69b4;
+            transform: rotate(-45deg);
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+            animation: floatHeart 4s ease-out forwards;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #ff69b4;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -15px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 15px;
+        }
+
+        .h1 { top: 70%; left: 10%; animation-delay: 0s; }
+        .h2 { top: 60%; left: 30%; animation-delay: 0.5s; }
+        .h3 { top: 80%; left: 50%; animation-delay: 1s; }
+        .h4 { top: 50%; left: 70%; animation-delay: 1.5s; }
+        .h5 { top: 90%; left: 20%; animation-delay: 2s; }
+        .h6 { top: 40%; left: 80%; animation-delay: 2.5s; }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="star" style="top: 10%; left: 15%; --duration: 15s; --s: 0.8;"></div>
+    <div class="star" style="top: 25%; left: 80%; --duration: 12s; --s: 1.2;"></div>
+    <div class="star" style="top: 40%; left: 5%; --duration: 18s; --s: 0.7;"></div>
+    <div class="star" style="top: 60%; left: 90%; --duration: 10s; --s: 1.1;"></div>
+    <div class="star" style="top: 75%; left: 30%; --duration: 14s; --s: 0.9;"></div>
+    <div class="star" style="top: 90%; left: 65%; --duration: 16s; --s: 1.3;"></div>
+    <div class="star" style="top: 5%; left: 50%; --duration: 11s; --s: 1.0;"></div>
+    <div class="star" style="top: 30%; left: 40%; --duration: 13s; --s: 0.6;"></div>
+    <div class="star" style="top: 55%; left: 70%; --duration: 17s; --s: 1.0;"></div>
+    <div class="star" style="top: 85%; left: 20%; --duration: 15s; --s: 0.8;"></div>
+    <div class="star" style="top: 15%; left: 60%; --duration: 19s; --s: 1.1;"></div>
+    <div class="star" style="top: 70%; left: 5%; --duration: 12s; --s: 0.7;"></div>
+    <div class="star" style="top: 20%; left: 10%; --duration: 14s; --s: 0.9;"></div>
+    <div class="star" style="top: 45%; left: 95%; --duration: 16s; --s: 1.3;"></div>
+    <div class="star" style="top: 80%; left: 45%; --duration: 10s; --s: 1.0;"></div>
+    <div class="star" style="top: 35%; left: 25%; --duration: 18s; --s: 0.6;"></div>
+    <div class="star" style="top: 5%; left: 75%; --duration: 11s; --s: 1.2;"></div>
+    <div class="star" style="top: 65%; left: 10%; --duration: 13s; --s: 0.8;"></div>
+    <div class="star" style="top: 20%; left: 90%; --duration: 15s; --s: 1.0;"></div>
+    <div class="star" style="top: 40%; left: 35%; --duration: 17s; --s: 0.7;"></div>
+
+
+    <div class="bubble" style="top: 80%; left: 10%; --duration: 20s;"></div>
+    <div class="bubble" style="top: 50%; left: 90%; --duration: 22s;"></div>
+    <div class="bubble" style="top: 20%; left: 30%; --duration: 25s;"></div>
+    <div class="bubble" style="top: 70%; left: 60%; --duration: 18s;"></div>
+    <div class="bubble" style="top: 10%; left: 70%; --duration: 23s;"></div>
+    <div class="bubble" style="top: 90%; left: 40%; --duration: 21s;"></div>
+    <div class="bubble" style="top: 30%; left: 5%; --duration: 19s;"></div>
+    <div class="bubble" style="top: 65%; left: 85%; --duration: 24s;"></div>
+    <div class="bubble" style="top: 15%; left: 55%; --duration: 17s;"></div>
+    <div class="bubble" style="top: 40%; left: 20%; --duration: 26s;"></div>
+
+    <div class="particle" style="top: 20%; left: 10%; --duration: 10s; --x: 100px; --y: -200px; --x2: -50px; --y2: -300px;"></div>
+    <div class="particle" style="top: 70%; left: 80%; --duration: 12s; --x: -80px; --y: -150px; --x2: 30px; --y2: -250px;"></div>
+    <div class="particle" style="top: 50%; left: 30%; --duration: 9s; --x: 50px; --y: -100px; --x2: -20px; --y2: -180px;"></div>
+    <div class="particle" style="top: 10%; left: 90%; --duration: 11s; --x: -120px; --y: -250px; --x2: 60px; --y2: -350px;"></div>
+    <div class="particle" style="top: 85%; left: 40%; --duration: 13s; --x: 70px; --y: -120px; --x2: -40px; --y2: -220px;"></div>
+    <div class="particle" style="top: 30%; left: 60%; --duration: 8s; --x: -40px; --y: -80px; --x2: 20px; --y2: -160px;"></div>
+    <div class="particle" style="top: 60%; left: 15%; --duration: 14s; --x: 110px; --y: -180px; --x2: -70px; --y2: -280px;"></div>
+    <div class="particle" style="top: 40%; left: 75%; --duration: 9.5s; --x: -90px; --y: -130px; --x2: 50px; --y2: -230px;"></div>
+    <div class="particle" style="top: 5%; left: 5%; --duration: 10.5s; --x: 60px; --y: -110px; --x2: -30px; --y2: -190px;"></div>
+    <div class="particle" style="top: 95%; left: 50%; --duration: 12.5s; --x: -100px; --y: -200px; --x2: 40px; --y2: -300px;"></div>
+    <div class="particle" style="top: 25%; left: 85%; --duration: 11.5s; --x: -70px; --y: -160px; --x2: 25px; --y2: -260px;"></div>
+    <div class="particle" style="top: 75%; left: 20%; --duration: 13.5s; --x: 90px; --y: -140px; --x2: -60px; --y2: -240px;"></div>
+    <div class="particle" style="top: 45%; left: 95%; --duration: 8.5s; --x: -50px; --y: -90px; --x2: 15px; --y2: -170px;"></div>
+    <div class="particle" style="top: 15%; left: 35%; --duration: 14.5s; --x: 130px; --y: -220px; --x2: -80px; --y2: -320px;"></div>
+    <div class="particle" style="top: 65%; left: 65%; --duration: 9s; --x: -110px; --y: -100px; --x2: 55px; --y2: -190px;"></div>
+
+    <div class="deco-heart" style="top: 12%; left: 85%; --duration: 16s; animation-delay: 0s;"></div>
+    <div class="deco-heart" style="top: 68%; left: 5%; --duration: 14s; animation-delay: 1s;"></div>
+    <div class="deco-heart" style="top: 35%; left: 20%; --duration: 18s; animation-delay: 2s;"></div>
+    <div class="deco-heart" style="top: 80%; left: 75%; --duration: 15s; animation-delay: 3s;"></div>
+    <div class="deco-heart" style="top: 5%; left: 40%; --duration: 17s; animation-delay: 4s;"></div>
+    <div class="deco-heart" style="top: 50%; left: 95%; --duration: 13s; animation-delay: 0.5s;"></div>
+    <div class="deco-heart" style="top: 25%; left: 60%; --duration: 19s; animation-delay: 1.5s;"></div>
+    <div class="deco-heart" style="top: 90%; left: 15%; --duration: 12s; animation-delay: 2.5s;"></div>
+    <div class="deco-heart" style="top: 7%; left: 70%; --duration: 15s; animation-delay: 3.5s;"></div>
+    <div class="deco-heart" style="top: 55%; left: 10%; --duration: 17s; animation-delay: 4.5s;"></div>
+    <div class="deco-heart" style="top: 40%; left: 90%; --duration: 14s; animation-delay: 0s;"></div>
+    <div class="deco-heart" style="top: 88%; left: 50%; --duration: 16s; animation-delay: 1s;"></div>
+    <div class="deco-heart" style="top: 30%; left: 5%; --duration: 18s; animation-delay: 2s;"></div>
+    <div class="deco-heart" style="top: 60%; left: 30%; --duration: 15s; animation-delay: 3s;"></div>
+    <div class="deco-heart" style="top: 20%; left: 70%; --duration: 17s; animation-delay: 4s;"></div>
+    <div class="deco-heart" style="top: 75%; left: 40%; --duration: 13s; animation-delay: 0.5s;"></div>
+    <div class="deco-heart" style="top: 45%; left: 80%; --duration: 19s; animation-delay: 1.5s;"></div>
+    <div class="deco-heart" style="top: 10%; left: 25%; --duration: 12s; animation-delay: 2.5s;"></div>
+    <div class="deco-heart" style="top: 65%; left: 95%; --duration: 15s; animation-delay: 3.5s;"></div>
+    <div class="deco-heart" style="top: 3%; left: 55%; --duration: 17s; animation-delay: 4.5s;"></div>
+
+
+    <div class="light-ray" style="top: 0; left: 25%; --duration: 8s;"></div>
+    <div class="light-ray" style="top: 0; left: 70%; --duration: 10s;"></div>
+    <div class="light-ray" style="top: 0; left: 10%; --duration: 9s;"></div>
+    <div class="light-ray" style="top: 0; left: 85%; --duration: 7s;"></div>
+    <div class="light-ray" style="top: 0; left: 45%; --duration: 11s;"></div>
+    <div class="light-ray" style="top: 0; left: 5%; --duration: 9.5s;"></div>
+    <div class="light-ray" style="top: 0; left: 90%; --duration: 8.5s;"></div>
+
+
+    <div class="cloud cloud-small" style="top: 10%; left: -50px; --duration: 35s;"></div>
+    <div class="cloud cloud-medium" style="top: 25%; left: -100px; --duration: 40s;"></div>
+    <div class="cloud cloud-small" style="top: 5%; left: 70%; --duration: 30s;"></div>
+    <div class="cloud cloud-medium" style="top: 35%; left: 20%; --duration: 45s;"></div>
+    <div class="cloud cloud-small" style="top: 20%; left: 90%; --duration: 38s;"></div>
+
+
+    <div class="dinosaur-background"></div>
+
+    <div class="container">
+        <h1 class="question-text">¿Me quieres?</h1>
+        <div class="buttons-container">
+            <button id="yesBtn" class="btn yes-btn">Sí</button>
+        </div>
+        <button id="noBtn" class="btn no-btn">No</button> 
+        <div id="heartAnimation" class="heart-animation hidden">
+            <div class="heart h1"></div>
+            <div class="heart h2"></div>
+            <div class="heart h3"></div>
+            <div class="heart h4"></div>
+            <div class="heart h5"></div>
+            <div class="heart h6"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const questionText = document.querySelector('.question-text');
+            const heartAnimation = document.getElementById('heartAnimation');
+
+            noBtn.addEventListener('click', () => {
+                const noBtnRect = noBtn.getBoundingClientRect(); // Dimensiones actuales del botón No
+                const yesBtnRect = yesBtn.getBoundingClientRect(); // Dimensiones y posición del botón Sí
+
+                const padding = 20; // Margen para que el botón no se pegue a los bordes de la ventana
+
+                // Calcular los límites de la ventana para el *centro* del botón "No"
+                // Esto asegura que el botón SIEMPRE esté completamente dentro de la vista
+                const minCenterX = padding + noBtnRect.width / 2;
+                const maxCenterX = window.innerWidth - padding - noBtnRect.width / 2;
+                const minCenterY = padding + noBtnRect.height / 2;
+                const maxCenterY = window.innerHeight - padding - noBtnRect.height / 2;
+
+                let newCenterX, newCenterY; // Las nuevas coordenadas para el centro del botón "No"
+                let collisionWithYesBtn;
+                let attempts = 0;
+                const maxAttempts = 200; // Intentos para encontrar una posición sin colisión
+
+                do {
+                    // Generar nuevas posiciones aleatorias para el *centro* del botón en toda la pantalla
+                    newCenterX = Math.random() * (maxCenterX - minCenterX) + minCenterX;
+                    newCenterY = Math.random() * (maxCenterY - minCenterY) + minCenterY;
+
+                    // Calcular las coordenadas de las esquinas del botón "No" basadas en su *centro*
+                    const noBtnActualLeft = newCenterX - noBtnRect.width / 2;
+                    const noBtnActualRight = newCenterX + noBtnRect.width / 2;
+                    const noBtnActualTop = newCenterY - noBtnRect.height / 2;
+                    const noBtnActualBottom = newCenterY + noBtnRect.height / 2; // <-- ¡Aquí estaba el error tipográfico!
+
+                    // Verificar colisión con el botón "Sí"
+                    collisionWithYesBtn = !(
+                        noBtnActualRight < yesBtnRect.left ||
+                        noBtnActualLeft > yesBtnRect.right ||
+                        noBtnActualBottom < yesBtnRect.top ||
+                        noBtnActualTop > yesBtnRect.bottom
+                    );
+
+                    attempts++;
+                } while (collisionWithYesBtn && attempts < maxAttempts);
+
+                // Lógica de "rescate": Si no se encuentra una buena posición después de muchos intentos,
+                // o si el movimiento es muy pequeño (se quedó "atorado"), forzar un salto grande.
+                const currentLeft = parseFloat(noBtn.style.left || 0); // Posición actual del *centro* X
+                const currentTop = parseFloat(noBtn.style.top || 0); // Posición actual del *centro* Y
+                const minMovementThreshold = 100; // Mínimo de píxeles que debe moverse para considerarse "grande"
+
+                // Si se agotaron los intentos O el botón no se movió lo suficiente
+                if (attempts >= maxAttempts || (Math.abs(newCenterX - currentLeft) < minMovementThreshold && Math.abs(newCenterY - currentTop) < minMovementThreshold)) {
+                    // Intentar moverlo a una de las "esquinas" del viewport (para el centro del botón)
+                    const potentialPositions = [
+                        {x: minCenterX, y: minCenterY}, // Top-left corner for center
+                        {x: maxCenterX, y: minCenterY}, // Top-right corner for center
+                        {x: minCenterX, y: maxCenterY}, // Bottom-left corner for center
+                        {x: maxCenterX, y: maxCenterY}  // Bottom-right corner for center
+                    ];
+                    
+                    let chosenPos = potentialPositions[Math.floor(Math.random() * potentialPositions.length)]; // Elige una al azar
+
+                    // Para asegurarse de que esta posición elegida no colisiona con el botón "Sí"
+                    let safePosFound = false;
+                    for (let i = 0; i < potentialPositions.length; i++) {
+                        const tempX = potentialPositions[i].x;
+                        const tempY = potentialPositions[i].y;
+
+                        // Calcular esquinas del botón "No" en esta posición temporal
+                        const tempNoBtnActualLeft = tempX - noBtnRect.width / 2;
+                        const tempNoBtnActualRight = tempX + noBtnRect.width / 2;
+                        const tempNoBtnActualTop = tempY - noBtnRect.height / 2;
+                        const tempNoBtnActualBottom = tempY + noBtnRect.height / 2;
+
+                        // Verificar colisión
+                        const tempCollision = !(
+                            tempNoBtnActualRight < yesBtnRect.left ||
+                            tempNoBtnActualLeft > yesBtnRect.right ||
+                            tempNoBtnActualBottom < yesBtnRect.top ||
+                            tempNoBtnActualTop > yesBtnRect.bottom
+                        );
+
+                        if (!tempCollision) { // Si no hay colisión, elegimos esta posición
+                            chosenPos = {x: tempX, y: tempY};
+                            safePosFound = true;
+                            break; // Salir del bucle, ya encontramos una posición segura
+                        }
+                    }
+
+                    if (!safePosFound) {
+                        // Último recurso: si ni siquiera las esquinas son seguras (muy raro), forzar una posición fija.
+                        newCenterX = window.innerWidth / 2;
+                        newCenterY = window.innerHeight / 2;
+                        // Si aun así colisiona, moverlo a una posición "menos visible" pero dentro de los límites
+                        if (!(
+                            (newCenterX + noBtnRect.width / 2) < yesBtnRect.left ||
+                            (newCenterX - noBtnRect.width / 2) > yesBtnRect.right ||
+                            (newCenterY + noBtnRect.height / 2) < yesBtnRect.top ||
+                            (newCenterY - noBtnRect.height / 2) > yesBtnRect.bottom
+                        )) {
+                             newCenterX = minCenterX;
+                             newCenterY = minCenterY;
+                        }
+                    } else {
+                        newCenterX = chosenPos.x;
+                        newCenterY = chosenPos.y;
+                    }
+                }
+
+                // Aplicar las nuevas posiciones (para el centro del botón)
+                noBtn.style.left = `${newCenterX}px`;
+                noBtn.style.top = `${newCenterY}px`;
+                noBtn.style.transform = `translate(-50%, -50%)`; // Mantiene el centrado visual
+            });
+
+            yesBtn.addEventListener('click', () => {
+                questionText.textContent = "¡Sabía que dirías que sí! ❤️";
+                questionText.style.color = "#ff69b4";
+                questionText.style.fontSize = "4em";
+                questionText.style.transition = "all 0.5s ease-in-out";
+
+                yesBtn.classList.add('hidden');
+                noBtn.classList.add('hidden');
+
+                heartAnimation.classList.remove('hidden');
+
+                heartAnimation.querySelectorAll('.heart').forEach(heart => {
+                    heart.style.animation = 'none'; // Detener animación actual
+                    heart.offsetHeight; // Truco para forzar un reflow y reiniciar la animación
+                    heart.style.setProperty('--rand-x', (Math.random() * 400 - 200));
+                    heart.style.setProperty('--rand-y', (Math.random() * -300 - 100));
+                    heart.style.animation = 'floatHeart 4s ease-out forwards';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
